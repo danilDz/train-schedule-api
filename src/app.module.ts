@@ -4,6 +4,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { ConfigModule } from "@nestjs/config";
 import { UsersModule } from "./users/users.module";
 import { dataSourceOptions } from "./data-source";
+import { TrainsModule } from './trains/trains.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { dataSourceOptions } from "./data-source";
     }),
     TypeOrmModule.forRoot(dataSourceOptions),
     UsersModule,
+    TrainsModule,
   ],
   providers: [
     {
