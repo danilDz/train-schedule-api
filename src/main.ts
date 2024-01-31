@@ -15,7 +15,7 @@ async function bootstrap() {
     url: process.env.REDIS_URL,
   }).connect()) as RedisClientType;
   JWT = new JWTRedis(redisClient);
-  server = await app.listen(process.env.PORT || 3000);
+  server = await app.listen(process.env.PORT || 3001);
 }
 bootstrap();
 export { JWT };
