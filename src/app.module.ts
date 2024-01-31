@@ -4,7 +4,12 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { ConfigModule } from "@nestjs/config";
 import { UsersModule } from "./users/users.module";
 import { dataSourceOptions } from "./data-source";
-import { TrainsModule } from './trains/trains.module';
+import { TrainsModule } from "./trains/trains.module";
+
+///
+/// FR - Implement custom Logger
+/// FR - Implement Exception Filter
+///
 
 @Module({
   imports: [

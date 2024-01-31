@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
   Post,
   UseGuards,
@@ -28,34 +29,41 @@ export class UsersController {
   ) {}
 
   @Post("/signup")
+  @HttpCode(201)
   async signup(@Body() body: UserSignupDto) {
     const user = await this.usersService.signup(body);
     const secret = this.configService.get("JWT_SECRET");
-    return JWT.sign(instanceToPlain(user), secret, { expiresIn: "1h" });
+    const expire = this.configService.get("TOKEN_EXPIRE_TIME");
+    return JWT.sign(instanceToPlain(user), secret, { expiresIn: expire });
   }
 
   @Post("/signin")
+  @HttpCode(201)
   async signin(@Body() body: UserSigninDto) {
     const user = await this.usersService.login(body);
     const secret = this.configService.get("JWT_SECRET");
-    return JWT.sign(instanceToPlain(user), secret, { expiresIn: "1h" });
+    const expire = this.configService.get("TOKEN_EXPIRE_TIME");
+    return JWT.sign(instanceToPlain(user), secret, { expiresIn: expire });
   }
 
   @Post("/signout")
   @UseGuards(AuthGuard)
+  @HttpCode(201)
   async signout(@CurrentUser() user: any) {
     return await JWT.destroy(user.jti);
   }
 
   @Get("/check")
   @UseGuards(AuthGuard)
+  @HttpCode(200)
   checkLogin(@CurrentUser() user: User) {
     return user;
   }
 
   @Delete("/:id")
   @UseGuards(AuthGuard)
-  async deleteUser(@Param("id") id: string) {
+  @HttpCode(200)
+  deleteUser(@Param("id") id: string) {
     return this.usersService.deleteUserById(id);
   }
 }
