@@ -21,15 +21,14 @@ export class CurrentUserMiddleware implements NestMiddleware {
   ) {}
 
   async use(req: Request, res: Response, next: NextFunction) {
-    const authorizationHeader = req.headers.authorization;
     req.currentUser = null;
-    if (authorizationHeader) {
+    const { jwt } = req.cookies || {};
+    if (jwt) {
       try {
-        const token = authorizationHeader.split(" ")[1];
-        const decodedToken = await JWT.verify(
-          token,
+        const decodedToken = (await JWT.verify(
+          jwt,
           this.configService.get("JWT_SECRET"),
-        ) as User;
+        )) as User;
         const user = await this.usersService.findOneUser(decodedToken.email);
         if (user) req.currentUser = decodedToken;
       } catch (e) {

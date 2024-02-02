@@ -8,16 +8,24 @@ import {
   Patch,
   Post,
   Put,
+  Query,
   UseGuards,
 } from "@nestjs/common";
 import { AuthGuard } from "../guards/auth.guard";
 import { TrainDto } from "./dto/train.dto";
 import { TrainsService } from "./trains.service";
+import { GetAllTrainsDto } from "./dto/get-all-trains.dto";
 
 @Controller("api/trains")
 @UseGuards(AuthGuard)
 export class TrainsController {
   constructor(private trainsService: TrainsService) {}
+  
+  @Get()
+  @HttpCode(200)
+  getAllTrains(@Query() query: Partial<GetAllTrainsDto>) {
+    return this.trainsService.getAll(query);
+  }
 
   @Post()
   @HttpCode(201)
