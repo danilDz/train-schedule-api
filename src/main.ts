@@ -21,7 +21,7 @@ async function bootstrap() {
   //   }),
   // );
   app.use((req: Request, res: Response, next: NextFunction) => {
-    // console.log(req);
+    console.log(req.method);
     res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
     res.setHeader("Access-Control-Allow-Credentials", "true");
     res.setHeader("Access-Control-Max-Age", "86400");
