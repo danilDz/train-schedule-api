@@ -6,7 +6,7 @@ let dbOptions: DataSourceOptions = {
   type: "postgres",
   url: process.env.DATABASE_URL,
   entities: [],
-  migrations: ["db/migrations/*.js"],
+  migrations: ["src/migrations/*.js"],
   synchronize: true,
 };
 
@@ -19,12 +19,12 @@ switch (process.env.NODE_ENV) {
   case "test":
     Object.assign(dbOptions, {
       entities: ["**/*.entity.ts"],
-      // migrationsRun: true,
+      migrationsRun: true,
     });
     break;
   case "production":
     Object.assign(dbOptions, {
-      // migrationsRun: true,
+      migrationsRun: true,
       entities: ["**/*.entity.js"],
       ssl: {
         rejectUnauthorized: false,
