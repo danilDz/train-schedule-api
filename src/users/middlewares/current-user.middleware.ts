@@ -23,7 +23,6 @@ export class CurrentUserMiddleware implements NestMiddleware {
   async use(req: Request, res: Response, next: NextFunction) {
     req.currentUser = null;
     const auth = req.headers.authorization;
-    console.log(auth);
     if (auth) {
       try {
         const jwt = auth.split(" ")[1];
