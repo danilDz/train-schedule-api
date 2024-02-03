@@ -22,7 +22,7 @@ export class CurrentUserMiddleware implements NestMiddleware {
 
   async use(req: Request, res: Response, next: NextFunction) {
     req.currentUser = null;
-    console.log(req.cookies);
+    console.log(req.headers.cookie);
     const { jwt } = req.cookies || {};
     console.log(jwt);
     if (jwt) {
