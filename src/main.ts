@@ -33,7 +33,7 @@ async function bootstrap() {
       "Access-Control-Allow-Headers",
       "Content-Type, Authorization, Accept, Accept-Encoding, Accept-Language, Connection, X-Requested-With",
     );
-    if (req.method === "OPTIONS") res.status(200);
+    if (req.method === "OPTIONS") res.sendStatus(200);
     next();
   });
   app.use(cookieParser());
