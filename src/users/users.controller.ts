@@ -6,6 +6,7 @@ import {
   HttpCode,
   Param,
   Post,
+  Res,
   UseGuards,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
@@ -19,6 +20,7 @@ import { AuthGuard } from "../guards/auth.guard";
 import { CurrentUser } from "./decorators/current-user.decorator";
 import { User } from "./entity/user.entity";
 import { JWT } from "../main";
+import { Response } from "express";
 
 @Controller("api/auth")
 @Serialize(UserDto)
@@ -39,11 +41,13 @@ export class UsersController {
 
   @Post("/signin")
   @HttpCode(201)
-  async signin(@Body() body: UserSigninDto) {
+  async signin(@Body() body: UserSigninDto, @Res() res: Response) {
     const user = await this.usersService.login(body);
     const secret = this.configService.get("JWT_SECRET");
     const expire = this.configService.get("TOKEN_EXPIRE_TIME");
-    return JWT.sign(instanceToPlain(user), secret, { expiresIn: expire });
+    const jwt = await JWT.sign(instanceToPlain(user), secret, { expiresIn: expire });
+    res.cookie("jwt", jwt, {maxAge: 3600000});
+    res.json(jwt);
   }
 
   @Post("/signout")
