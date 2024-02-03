@@ -7,7 +7,7 @@ let dbOptions: DataSourceOptions = {
   url: process.env.DATABASE_URL,
   entities: [],
   migrations: ["src/migrations/*.js"],
-  synchronize: true,
+  // synchronize: true,
 };
 
 switch (process.env.NODE_ENV) {
