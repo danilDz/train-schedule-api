@@ -43,7 +43,10 @@ export class UsersController {
     const user = await this.usersService.login(body);
     const secret = this.configService.get("JWT_SECRET");
     const expire = this.configService.get("TOKEN_EXPIRE_TIME");
-    return JWT.sign(instanceToPlain(user), secret, { expiresIn: expire });
+    const jwt = await JWT.sign(instanceToPlain(user), secret, {
+      expiresIn: expire,
+    });
+    return JSON.stringify({ jwt, isAdmin: user.isAdmin });
   }
 
   @Post("/signout")

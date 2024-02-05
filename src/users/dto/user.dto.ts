@@ -12,4 +12,7 @@ export class UserDto {
 
   @Expose()
   lastName: string;
+
+  @Expose()
+  isAdmin: boolean;
 }
