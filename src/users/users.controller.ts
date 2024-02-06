@@ -16,6 +16,7 @@ import { UserDto } from "./dto/user.dto";
 import { UsersService } from "./users.service";
 import { Serialize } from "../interceptors/serialize.interceptor";
 import { AuthGuard } from "../guards/auth.guard";
+import { AdminGuard } from "src/guards/admin.guard";
 import { CurrentUser } from "./decorators/current-user.decorator";
 import { User } from "./entity/user.entity";
 import { JWT } from "../main";
@@ -64,7 +65,7 @@ export class UsersController {
   }
 
   @Delete("/:id")
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, AdminGuard)
   @HttpCode(200)
   deleteUser(@Param("id") id: string) {
     return this.usersService.deleteUserById(id);
