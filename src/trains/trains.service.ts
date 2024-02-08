@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { TrainDto } from "./dto/train.dto";
@@ -21,7 +21,7 @@ export class TrainsService {
     const existedTrain = await this.trainsRepo.findOne({
       where: { ...trainInfo },
     });
-    if (existedTrain) return "Exactly the same train already exists!";
+    if (existedTrain) throw new BadRequestException("Exactly the same train already exists!");
     const train = this.trainsRepo.create({ ...trainInfo });
     return this.trainsRepo.save(train);
   }
