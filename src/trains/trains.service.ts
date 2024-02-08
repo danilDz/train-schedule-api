@@ -37,9 +37,14 @@ export class TrainsService {
     return this.trainsRepo.remove(train);
   }
 
-  async updateById(id: string, trainInfo: Partial<TrainDto>) {
-    const train = await this.findById(id);
+  async updateById(trainId: string, trainInfo: Partial<TrainDto>) {
+    const train = await this.findById(trainId);
     Object.assign(train, { ...trainInfo });
+    const {id, ...withoutId} = train;
+    const existedTrain = await this.trainsRepo.findOne({
+      where: { ...withoutId },
+    });
+    if (existedTrain) throw new BadRequestException("Exactly the same train already exists!");
     return this.trainsRepo.save(train);
   }
 }
