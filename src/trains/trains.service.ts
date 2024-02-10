@@ -12,7 +12,7 @@ export class TrainsService {
   getAll(queryParams: Partial<GetAllTrainsDto>) {
     return this.trainsRepo
       .createQueryBuilder()
-      .offset(queryParams.offset)
+      .skip(queryParams.offset)
       .take(queryParams.limit)
       .getMany();
   }
