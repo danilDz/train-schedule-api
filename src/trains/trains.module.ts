@@ -13,6 +13,6 @@ import { UsersModule } from "src/users/users.module";
 })
 export class TrainsModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(CurrentUserMiddleware).forRoutes("*");
+    consumer.apply(CurrentUserMiddleware).forRoutes(TrainsController);
   }
 }

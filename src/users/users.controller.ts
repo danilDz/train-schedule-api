@@ -8,8 +8,6 @@ import {
   Post,
   UseGuards,
 } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
-import { instanceToPlain } from "class-transformer";
 import { UserSignupDto } from "./dto/user-signup.dto";
 import { UserSigninDto } from "./dto/user-signin.dto";
 import { UserDto } from "./dto/user.dto";
@@ -21,33 +19,21 @@ import { CurrentUser } from "./decorators/current-user.decorator";
 import { User } from "./entity/user.entity";
 import { JWT } from "../main";
 
-@Controller("api/auth")
+@Controller("auth")
 @Serialize(UserDto)
 export class UsersController {
-  constructor(
-    private usersService: UsersService,
-    private configService: ConfigService,
-  ) {}
+  constructor(private usersService: UsersService) {}
 
   @Post("/signup")
   @HttpCode(201)
   async signup(@Body() body: UserSignupDto) {
-    const user = await this.usersService.signup(body);
-    const secret = this.configService.get("JWT_SECRET");
-    const expire = this.configService.get("TOKEN_EXPIRE_TIME");
-    return JWT.sign(instanceToPlain(user), secret, { expiresIn: expire });
+    return this.usersService.signup(body);
   }
 
   @Post("/signin")
   @HttpCode(201)
   async signin(@Body() body: UserSigninDto) {
-    const user = await this.usersService.login(body);
-    const secret = this.configService.get("JWT_SECRET");
-    const expire = this.configService.get("TOKEN_EXPIRE_TIME");
-    const jwt = await JWT.sign(instanceToPlain(user), secret, {
-      expiresIn: expire,
-    });
-    return JSON.stringify({ jwt, isAdmin: user.isAdmin });
+    return this.usersService.login(body);
   }
 
   @Post("/signout")

@@ -17,7 +17,7 @@ import { TrainDto } from "./dto/train.dto";
 import { TrainsService } from "./trains.service";
 import { GetAllTrainsDto } from "./dto/get-all-trains.dto";
 
-@Controller("api/trains")
+@Controller("trains")
 @UseGuards(AuthGuard)
 export class TrainsController {
   constructor(private trainsService: TrainsService) {}

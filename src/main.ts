@@ -20,6 +20,7 @@ async function bootstrap() {
     }),
   );
   app.use(cookieParser());
+  app.setGlobalPrefix("api");
   redisClient = (await createClient({
     url: process.env.REDIS_URL,
   }).connect()) as RedisClientType;

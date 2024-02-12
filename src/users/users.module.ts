@@ -1,7 +1,7 @@
 import { Module, MiddlewareConsumer } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { UsersController } from "./users.controller";
-import { UsersService } from './users.service';
+import { UsersService } from "./users.service";
 import { User } from "./entity/user.entity";
 import { CurrentUserMiddleware } from "./middlewares/current-user.middleware";
 
@@ -9,10 +9,13 @@ import { CurrentUserMiddleware } from "./middlewares/current-user.middleware";
   imports: [TypeOrmModule.forFeature([User])],
   controllers: [UsersController],
   providers: [UsersService],
-  exports: [UsersService]
+  exports: [UsersService],
 })
 export class UsersModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(CurrentUserMiddleware).forRoutes("*");
+    consumer
+      .apply(CurrentUserMiddleware)
+      .exclude("auth/signin", "auth/signup")
+      .forRoutes(UsersController);
   }
 }
