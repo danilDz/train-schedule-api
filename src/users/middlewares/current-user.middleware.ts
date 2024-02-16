@@ -37,7 +37,7 @@ export class CurrentUserMiddleware implements NestMiddleware {
       const user = await this.usersService.findOneUser(decodedToken.email);
       if (user) req.currentUser = decodedToken;
     } catch (e) {
-      console.log(e);
+      throw new UnauthorizedException(e.message);
     }
     next();
   }

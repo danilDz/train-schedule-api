@@ -1,6 +1,8 @@
-import { DataSource, DataSourceOptions } from "typeorm";
 import { config } from "dotenv";
 config();
+
+import { DataSource, DataSourceOptions } from "typeorm";
+import { LoggerService } from "./logger/logger.service";
 
 let dbOptions: DataSourceOptions = {
   type: "postgres",
@@ -32,7 +34,9 @@ switch (process.env.NODE_ENV) {
     });
     break;
   default:
-    throw new Error("Unknown environment");
+    const logger = new LoggerService();
+    logger.error(`Unknown environment: ${process.env.NODE_ENV}`, null, "Data Source Options");
+    process.exit(1);
 }
 
 export const dataSourceOptions: DataSourceOptions = dbOptions;

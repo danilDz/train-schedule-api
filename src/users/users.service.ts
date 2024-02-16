@@ -48,8 +48,7 @@ export class UsersService {
       const expire = this.configService.get("TOKEN_EXPIRE_TIME");
       return JWT.sign(instanceToPlain(user), secret, { expiresIn: expire });
     } catch (e) {
-      console.log(e);
-      throw new BadRequestException("Hashing went wrong!");
+      throw new BadRequestException(e.message);
     }
   }
 
@@ -66,8 +65,15 @@ export class UsersService {
       });
       return JSON.stringify({ jwt, isAdmin: user.isAdmin });
     } catch (e) {
-      console.log(e);
-      throw new BadRequestException(e.response.message);
+      throw new BadRequestException(e.message);
+    }
+  }
+
+  async signout(jti: string) {
+    try {
+      return await JWT.destroy(jti);
+    } catch (e) {
+      throw new BadRequestException(e.message);
     }
   }
 }

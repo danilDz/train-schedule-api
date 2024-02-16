@@ -17,7 +17,6 @@ import { AuthGuard } from "../guards/auth.guard";
 import { AdminGuard } from "src/guards/admin.guard";
 import { CurrentUser } from "./decorators/current-user.decorator";
 import { User } from "./entity/user.entity";
-import { JWT } from "../main";
 
 @Controller("auth")
 @Serialize(UserDto)
@@ -26,21 +25,21 @@ export class UsersController {
 
   @Post("/signup")
   @HttpCode(201)
-  async signup(@Body() body: UserSignupDto) {
+  signup(@Body() body: UserSignupDto) {
     return this.usersService.signup(body);
   }
 
   @Post("/signin")
   @HttpCode(201)
-  async signin(@Body() body: UserSigninDto) {
+  signin(@Body() body: UserSigninDto) {
     return this.usersService.login(body);
   }
 
   @Post("/signout")
   @UseGuards(AuthGuard)
   @HttpCode(201)
-  async signout(@CurrentUser() user: any) {
-    return await JWT.destroy(user.jti);
+  signout(@CurrentUser() user: any) {
+    return this.usersService.signout(user.jti);
   }
 
   @Get("/check")
