@@ -10,6 +10,7 @@ import { AppModule } from "./app.module";
 import { LoggerService } from "./logger/logger.service";
 
 const logger = new LoggerService();
+const PORT = process.env.PORT || 3001;
 let JWT: JWTRedis;
 let redisClient: RedisClientType;
 let server;
@@ -28,11 +29,8 @@ async function bootstrap() {
     url: process.env.REDIS_URL,
   }).connect()) as RedisClientType;
   JWT = new JWTRedis(redisClient);
-  server = await app.listen(process.env.PORT || 3001, async () => {
-    logger.log(
-      `Server is available by this link: ${await app.getUrl()}`,
-      "Bootstrap",
-    );
+  server = await app.listen(PORT, async () => {
+    logger.log(`Application is running on: ${process.env.APPLICATION_URL}`, "Bootstrap");
   });
 }
 
