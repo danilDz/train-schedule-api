@@ -11,6 +11,7 @@ import { hash, compare } from "bcryptjs";
 import { User } from "./entity/user.entity";
 import { UserSignupDto } from "./dto/user-signup.dto";
 import { UserSigninDto } from "./dto/user-signin.dto";
+import { UserLoginDto } from "./dto/user-login.dto";
 import { JWT } from "../main";
 
 @Injectable()
@@ -20,22 +21,22 @@ export class UsersService {
     private configService: ConfigService,
   ) {}
 
-  createUser(userInfo: UserSignupDto) {
+  createUser(userInfo: UserSignupDto): Promise<User> {
     const user = this.usersRepo.create({ ...userInfo });
     return this.usersRepo.save(user);
   }
 
-  findOneUser(email: string) {
+  findOneUser(email: string): Promise<User> {
     return this.usersRepo.findOne({ where: { email } });
   }
 
-  async deleteUserById(id: string) {
+  async deleteUserById(id: string): Promise<User> {
     const user = await this.usersRepo.findOne({ where: { id } });
     if (!user) throw new NotFoundException("User with this id not found!");
     return this.usersRepo.remove(user);
   }
 
-  async signup(userInfo: UserSignupDto) {
+  async signup(userInfo: UserSignupDto): Promise<string> {
     const user = await this.findOneUser(userInfo.email);
     if (user) throw new BadRequestException("This email is already taken!");
     try {
@@ -52,7 +53,7 @@ export class UsersService {
     }
   }
 
-  async login(userInfo: UserSigninDto) {
+  async login(userInfo: UserSigninDto): Promise<UserLoginDto> {
     const user = await this.findOneUser(userInfo.email);
     if (!user) throw new NotFoundException("User with this email not found!");
     try {
@@ -63,13 +64,13 @@ export class UsersService {
       const jwt = await JWT.sign(instanceToPlain(user), secret, {
         expiresIn: expire,
       });
-      return JSON.stringify({ jwt, isAdmin: user.isAdmin });
+      return { jwt, isAdmin: user.isAdmin };
     } catch (e) {
       throw new BadRequestException(e.message);
     }
   }
 
-  async signout(jti: string) {
+  async signout(jti: string): Promise<boolean> {
     try {
       return await JWT.destroy(jti);
     } catch (e) {

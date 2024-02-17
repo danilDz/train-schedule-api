@@ -1,13 +1,18 @@
 import { Transform } from "class-transformer";
-import { IsNumber, Min } from "class-validator";
+import { IsNumber, Min, IsOptional } from "class-validator";
+import { ApiPropertyOptional } from "@nestjs/swagger";
 
 export class GetAllTrainsDto {
+  @IsOptional()
   @Transform(({ value }) => parseInt(value))
   @IsNumber()
   @Min(2)
-  limit: number;
+  @ApiPropertyOptional()
+  limit?: number;
 
+  @IsOptional()
   @Transform(({ value }) => parseInt(value))
   @IsNumber()
-  offset: number;
+  @ApiPropertyOptional()
+  offset?: number;
 }

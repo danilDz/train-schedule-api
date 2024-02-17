@@ -5,7 +5,7 @@ import { NestFactory } from "@nestjs/core";
 import { createClient, RedisClientType } from "redis";
 import JWTRedis from "jwt-redis";
 import * as cookieParser from "cookie-parser";
-import * as cors from "cors";
+import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import { AppModule } from "./app.module";
 import { LoggerService } from "./logger/logger.service";
 
@@ -17,20 +17,34 @@ let server;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.use(
-    cors({
-      credentials: true,
-      origin: true,
-    }),
-  );
-  app.use(cookieParser());
+
+  app.enableCors();
   app.setGlobalPrefix("api");
+  app.use(cookieParser());
+  
+  const config = new DocumentBuilder()
+    .setTitle("Train Schedule API")
+    .setDescription("Train Schedule API description.")
+    .setVersion("1.0")
+    .addBearerAuth()
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup("swagger", app, document);
+
   redisClient = (await createClient({
     url: process.env.REDIS_URL,
   }).connect()) as RedisClientType;
   JWT = new JWTRedis(redisClient);
-  server = await app.listen(PORT, async () => {
-    logger.log(`Application is running on: ${process.env.APPLICATION_URL}`, "Bootstrap");
+
+  server = await app.listen(PORT, () => {
+    logger.log(
+      `Application is running on: ${process.env.APPLICATION_URL}`,
+      "Bootstrap",
+    );
+    logger.log(
+      `Swagger is running on: ${process.env.APPLICATION_URL}/swagger`,
+      "Bootstrap",
+    );
   });
 }
 
