@@ -1,14 +1,14 @@
-import { Module, MiddlewareConsumer } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Reflector } from '@nestjs/core';
-import { Payment } from './entity/payment.entity';
-import { Booking } from '../bookings/entity/booking.entity';
-import { Ticket } from '../tickets/entity/ticket.entity';
-import { PaymentsService } from './payments.service';
-import { PaymentsController } from './payments.controller';
-import { BookingsModule } from '../bookings/bookings.module';
-import { CurrentUserMiddleware } from '../users/middlewares/current-user.middleware';
-import { UsersModule } from '../users/users.module';
+import { Module, MiddlewareConsumer, RequestMethod } from "@nestjs/common";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { Reflector } from "@nestjs/core";
+import { Payment } from "./entity/payment.entity";
+import { Booking } from "../bookings/entity/booking.entity";
+import { Ticket } from "../tickets/entity/ticket.entity";
+import { PaymentsService } from "./payments.service";
+import { PaymentsController } from "./payments.controller";
+import { BookingsModule } from "../bookings/bookings.module";
+import { CurrentUserMiddleware } from "../users/middlewares/current-user.middleware";
+import { UsersModule } from "../users/users.module";
 
 @Module({
   imports: [
@@ -22,6 +22,9 @@ import { UsersModule } from '../users/users.module';
 })
 export class PaymentsModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(CurrentUserMiddleware).forRoutes(PaymentsController);
+    consumer
+      .apply(CurrentUserMiddleware)
+      .exclude({ path: "payments/webhook", method: RequestMethod.POST })
+      .forRoutes(PaymentsController);
   }
 }
