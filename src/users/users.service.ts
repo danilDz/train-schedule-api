@@ -12,6 +12,7 @@ import { User } from "./entity/user.entity";
 import { UserSignupDto } from "./dto/user-signup.dto";
 import { UserSigninDto } from "./dto/user-signin.dto";
 import { UserLoginDto } from "./dto/user-login.dto";
+import { Role } from "../common/enums/role.enum";
 import { JWT } from "../main";
 
 @Injectable()
@@ -21,8 +22,11 @@ export class UsersService {
     private configService: ConfigService,
   ) {}
 
-  createUser(userInfo: UserSignupDto): Promise<User> {
-    const user = this.usersRepo.create({ ...userInfo });
+  async createUser(userInfo: UserSignupDto): Promise<User> {
+    const user = this.usersRepo.create({
+      ...userInfo,
+      role: userInfo.role ?? Role.PASSENGER,
+    });
     return this.usersRepo.save(user);
   }
 
@@ -64,7 +68,7 @@ export class UsersService {
       const jwt = await JWT.sign(instanceToPlain(user), secret, {
         expiresIn: expire,
       });
-      return { jwt, isAdmin: user.isAdmin };
+      return { jwt, role: user.role };
     } catch (e) {
       throw new BadRequestException(e.message);
     }

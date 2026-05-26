@@ -1,5 +1,6 @@
 import { Module, MiddlewareConsumer } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { Reflector } from "@nestjs/core";
 import { TrainsController } from "./trains.controller";
 import { TrainsService } from "./trains.service";
 import { LoggerService } from "src/logger/logger.service";
@@ -10,7 +11,8 @@ import { UsersModule } from "src/users/users.module";
 @Module({
   imports: [TypeOrmModule.forFeature([Train]), UsersModule],
   controllers: [TrainsController],
-  providers: [TrainsService, LoggerService],
+  providers: [TrainsService, LoggerService, Reflector],
+  exports: [TrainsService],
 })
 export class TrainsModule {
   configure(consumer: MiddlewareConsumer) {
