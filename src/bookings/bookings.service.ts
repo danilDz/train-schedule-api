@@ -139,15 +139,23 @@ export class BookingsService {
     });
   }
 
-  async findMyBookings(userId: string): Promise<Booking[]> {
+  async findMyBookings(
+    userId: string,
+    page: number,
+    limit: number,
+  ): Promise<{ data: Booking[]; total: number; page: number; limit: number }> {
     // Expire stale PENDING_PAYMENT bookings for this user before returning
     await this.expireStaleBookings(userId);
 
-    return this.bookingsRepo.find({
+    const [data, total] = await this.bookingsRepo.findAndCount({
       where: { userId },
-      relations: ["seat", "seat.carriage", "payment", "ticket", "train"],
-      order: { createdAt: "DESC" },
+      relations: ['seat', 'seat.carriage', 'payment', 'ticket', 'train'],
+      order: { createdAt: 'DESC' },
+      skip: (page - 1) * limit,
+      take: limit,
     });
+
+    return { data, total, page, limit };
   }
 
   async findById(id: string): Promise<Booking> {

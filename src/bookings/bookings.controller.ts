@@ -5,6 +5,7 @@ import {
   HttpCode,
   Param,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -52,8 +53,14 @@ export class BookingsController {
   @HttpCode(200)
   @ApiOperation({ summary: "Get current passenger's bookings. Passenger only." })
   @ApiResponse({ status: 200, type: [Booking] })
-  getMyBookings(@CurrentUser() user: any): Promise<Booking[]> {
-    return this.bookingsService.findMyBookings(user.id);
+  getMyBookings(
+    @CurrentUser() user: any,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    const pageNum = Math.max(1, parseInt(page ?? '1', 10) || 1);
+    const limitNum = Math.min(50, Math.max(1, parseInt(limit ?? '5', 10) || 5));
+    return this.bookingsService.findMyBookings(user.id, pageNum, limitNum);
   }
 
   @Get(':id')
