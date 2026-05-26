@@ -15,4 +15,16 @@ export class DashboardStatsDto {
 
   @ApiProperty({ example: 85, description: "Number of non-cancelled trains" })
   activeRoutes: number;
+
+  @ApiProperty({ example: 340, description: "Total number of bookings" })
+  totalBookings: number;
+
+  @ApiProperty({ example: 280, description: "Confirmed (paid) bookings" })
+  successfulPayments: number;
+
+  @ApiProperty({ example: 15, description: "Pending payment bookings" })
+  pendingPayments: number;
+
+  @ApiProperty({ example: 78.5, description: "Seat occupancy rate in percent" })
+  occupancyRate: number;
 }

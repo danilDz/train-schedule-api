@@ -59,6 +59,9 @@ export class Train {
   @ApiProperty()
   updatedAt: Date;
 
+  @OneToMany("TrainCarriage", "train")
+  carriages: any[];
+
   @OneToMany("TrainStop", "train", { cascade: true })
   stops: any[];
 }
